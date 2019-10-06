@@ -22,6 +22,22 @@ provider "aws" {
   region = var.region
 }	
 
+data "template_file" "dna" {
+  template = "${file("dna.json.tpl")}"
+
+  vars {
+    attribute1 = "value1"
+    attribute2 = "value2"
+    recipe = "mycookbook::default"
+  }
+}
+
+resource "null_resource" "berks_package" {
+  # assuming this is run from a cookbook/terraform directory
+  provisioner "local-exec" {
+    command = "rm -f ${path.module}/cookbooks.tar.gz ; berks package ${path.module}/cookbooks.tar.gz --berksfile=../Berksfile"
+  }
+}
 
 # resource "aws_iam_role" "pi_role" {
 #   name = "test_role"
@@ -76,13 +92,42 @@ resource "aws_instance" "pi_windows" {
   instance_type   = "t2.large"
   vpc_security_group_ids = [aws_default_vpc.default.default_security_group_id]
 #  vpc             = "default"
-#  role           = var.host_role
+  role           = var.host_role
   key_name        = aws_key_pair.default.key_name
 
   
   # ebs_block_device {
   #   volume_size = 30 # GiB
   # }
+
+  provisioner "remote-exec" {
+    attributes_json = <<EOF
+      {
+        "key": "value",
+        "app": {
+          "cluster1": {
+            "nodes": [
+              "webserver1",
+              "webserver2"
+            ]
+          }
+        }
+      }
+    EOF
+
+    environment     = "_default"
+    client_options  = ["chef_license 'accept'"]
+    run_list        = ["cookbook::recipe"]
+    node_name       = "webserver1"
+    secret_key      = "${file("../encrypted_data_bag_secret")}"
+    server_url      = "https://chef.company.com/organizations/org1"
+    recreate_client = true
+    user_name       = "bork"
+    user_key        = "${file("../bork.pem")}"
+    version         = "12.4.1"
+
+  }
+  
 }
 
 
