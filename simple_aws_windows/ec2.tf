@@ -8,8 +8,8 @@ resource "aws_default_vpc" "default" {
 }
 
 resource "aws_key_pair" "default" {
-  key_name   = "id_rsa_2016_01_18"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNz1FOktd9ps6bCZWU+tbeIVcFeWfjbW0UfBN596IO/+RULRBi3HSy1BgS9FhGgeHBvCfIbHuyJh5Nuw/hDEM4LzbJ8JOh5Gfevc3YhKkdk/n3rb4Tj8nFK8Q7XIDSGOEPtZKZw/OyqfPmzwsMWbgZH5HRlR/M2ppZn1OeEyBt78Vf4KQxNbYfD/RSz7eQP78+RcFuX6a9wMLxMO83/M05LHGuG145CLtG+jH0fFgwo2fadrMFV3Uda1oIEAml8FVhpNvPSsFxHwJL1sdR4159hb7iw+mPu1HUHXye3VGtaSiHUnv88iP8eisoL62OAOHop+GC7rQ02WmOMHcDSkTfvfRUHk1bskBITo7Mc6ggGxAIsQVI56eT79xjgqCzckfCpNZkVvLeoyPmQVhvkw8tZ0VSX3aP07FyJig8RYjzB+MZ2ij5SZNhEupMn/5XXqFIRcPt6Fb7dyrNcoh6Nnxwo0VmVWoxFG4iEgXv3jHAL4JSv2RDsIxI0qsLMIprmP8= mark@alecto.local"
+  key_name   = "${var.ssh_key_name}"
+  public_key = "${file(var.ssh_public_key_path)}"
 }
 
 
@@ -35,13 +35,30 @@ resource "aws_instance" "pi_windows" {
 
   key_name               = aws_key_pair.default.key_name
   iam_instance_profile   = aws_iam_instance_profile.pi_profile.name 
-  
+
   # ebs_block_device {
   #   volume_size = 30 # GiB
   # }
 
+  
+  get_password_data      = true
+  connection {
+    type     = "winrm"
+    user     = "Administrator"
+    password = "${rsadecrypt(self.password_data,file(var.ssh_private_key_path))}"
+    host     = "${self.public_ip}"
+  }
+
+  provisioner "file" {
+    source      = "setup.ps1"
+    destination = "C:/setup.ps1"    
+  }
+  
   provisioner "remote-exec" {
+#    interpreter = ["PowerShell"]
+    
     scripts = ["setup.ps1"]
+
   }
 }
 

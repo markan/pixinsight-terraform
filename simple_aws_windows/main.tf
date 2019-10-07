@@ -1,25 +1,3 @@
-#
-#
-# arn:aws:s3:::muking-astrophotography
-variable "bucket" {
-  type = string
-  default = "muking-astrophotography"  
-}
-
-variable "region" {
-  type = string
-  default = "us-east-2"
-}
-
-variable "host_role" {
-  type = string
-  default = "HostBucketAccess_Careless"
-}
-
-variable "host_security_group" {
-  type = string
-  default = "launch-wizard-1"
-}
 
 #
 # Note: Set up your .aws/credentials file, and set profile below to match your desired profile (may be default)

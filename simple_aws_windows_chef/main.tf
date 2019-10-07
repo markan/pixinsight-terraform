@@ -77,7 +77,7 @@ resource "aws_default_vpc" "default" {
 
 resource "aws_key_pair" "default" {
   key_name   = "id_rsa_2016_01_18"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNz1FOktd9ps6bCZWU+tbeIVcFeWfjbW0UfBN596IO/+RULRBi3HSy1BgS9FhGgeHBvCfIbHuyJh5Nuw/hDEM4LzbJ8JOh5Gfevc3YhKkdk/n3rb4Tj8nFK8Q7XIDSGOEPtZKZw/OyqfPmzwsMWbgZH5HRlR/M2ppZn1OeEyBt78Vf4KQxNbYfD/RSz7eQP78+RcFuX6a9wMLxMO83/M05LHGuG145CLtG+jH0fFgwo2fadrMFV3Uda1oIEAml8FVhpNvPSsFxHwJL1sdR4159hb7iw+mPu1HUHXye3VGtaSiHUnv88iP8eisoL62OAOHop+GC7rQ02WmOMHcDSkTfvfRUHk1bskBITo7Mc6ggGxAIsQVI56eT79xjgqCzckfCpNZkVvLeoyPmQVhvkw8tZ0VSX3aP07FyJig8RYjzB+MZ2ij5SZNhEupMn/5XXqFIRcPt6Fb7dyrNcoh6Nnxwo0VmVWoxFG4iEgXv3jHAL4JSv2RDsIxI0qsLMIprmP8= mark@alecto.local"
+  public_key = ""
 }
 
 
